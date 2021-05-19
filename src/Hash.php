@@ -36,7 +36,7 @@ class Hash
             }
         }
         if (empty(self::$handle[$type])) {
-            $class = "\\think\\helper\\hash\\" . ucfirst($type);
+            $class = "\\Xnrcms\\BaseHelper\\hash\\" . ucfirst($type);
             if (!class_exists($class)) {
                 throw new \ErrorException("Not found {$type} hash type!");
             }
