@@ -9,7 +9,7 @@
 // | Author: yunwuxin <448901948@qq.com>
 // +----------------------------------------------------------------------
 
-namespace think\helper;
+namespace Xnrcms\BaseHelper;
 
 
 class Hash
