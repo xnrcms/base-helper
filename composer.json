@@ -1,0 +1,23 @@
+{
+    "name": "xnrcms/base-helper",
+    "description": "Common tool kits",
+    "license": "Apache-2.0",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "wyqing",
+            "email": "itwyqing@126.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Xnrcms\\BaseHelper\\": "src"
+        },
+        "files": [
+        ]
+    },
+    "require": {
+        "php": ">=7.2"
+    }
+}
