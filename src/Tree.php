@@ -1,11 +1,11 @@
 <?php
 
 
-namespace util;
+namespace Xnrcms\BaseHelper;
 
 /**
  * 树结构生成类
- * 
+ *
  */
 class Tree
 {
@@ -58,7 +58,7 @@ class Tree
      * @param int $pid 父级id
      * @param int $max_level 最多返回多少层，0为不限制
      * @param int $curr_level 当前层数
-     * 
+     *
      * @return array
      */
     public static function toLayer($lists = [], $pid = 0, $max_level = 0, $curr_level = 0)
