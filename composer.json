@@ -1,8 +1,12 @@
 {
     "name": "xnrcms/base-helper",
-    "description": "Common tool kits",
-    "license": "Apache-2.0",
     "type": "library",
+    "license": "Apache-2.0",
+    "keywords": [
+        "php",
+        "xnrcms"
+    ],
+    "description": "Common tool kits",
     "license": "MIT",
     "authors": [
         {
@@ -16,8 +20,5 @@
         },
         "files": [
         ]
-    },
-    "require": {
-        "php": ">=7.2"
     }
 }

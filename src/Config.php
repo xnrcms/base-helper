@@ -21,10 +21,10 @@ class Config
     /**
      * 设定配置参数的作用域
      * @access public
-     * @param  string $range 作用域
+     * @param string $range 作用域
      * @return void
      */
-    public static function range($range)
+    public static function range(string $range)
     {
         self::$range = $range;
 
@@ -34,13 +34,13 @@ class Config
     /**
      * 解析配置文件或内容
      * @access public
-     * @param  string $config 配置文件路径或内容
-     * @param  string $type   配置解析类型
-     * @param  string $name   配置名（如设置即表示二级配置）
-     * @param  string $range  作用域
+     * @param string $config 配置文件路径或内容
+     * @param string $type   配置解析类型
+     * @param string $name   配置名（如设置即表示二级配置）
+     * @param string $range  作用域
      * @return mixed
      */
-    public static function parse($config, $type = '', $name = '', $range = '')
+    public static function parse(string $config, string $type = '', string $name = '', string $range = '')
     {
         $range = $range ?: self::$range;
 
@@ -48,7 +48,7 @@ class Config
 
         $class = false !== strpos($type, '\\') ?
             $type :
-            '\\think\\config\\driver\\' . ucwords($type);
+            '\\Xnrcms\\BaseHelper\\config\\driver\\' . ucwords($type);
 
         return self::set((new $class())->parse($config), $name, $range);
     }
@@ -56,12 +56,12 @@ class Config
     /**
      * 加载配置文件（PHP格式）
      * @access public
-     * @param  string $file  配置文件名
-     * @param  string $name  配置名（如设置即表示二级配置）
-     * @param  string $range 作用域
+     * @param string $file  配置文件名
+     * @param string $name  配置名（如设置即表示二级配置）
+     * @param string $range 作用域
      * @return mixed
      */
-    public static function load($file, $name = '', $range = '')
+    public static function load(string $file, string $name = '', string $range = '')
     {
         $range = $range ?: self::$range;
 
@@ -88,11 +88,11 @@ class Config
     /**
      * 检测配置是否存在
      * @access public
-     * @param  string $name 配置参数名（支持二级配置 . 号分割）
-     * @param  string $range  作用域
+     * @param string $name 配置参数名（支持二级配置 . 号分割）
+     * @param string $range  作用域
      * @return bool
      */
-    public static function has($name, $range = '')
+    public static function has(string $name, string $range = ''): bool
     {
         $range = $range ?: self::$range;
 
@@ -108,11 +108,11 @@ class Config
     /**
      * 获取配置参数 为空则获取所有配置
      * @access public
-     * @param  string $name 配置参数名（支持二级配置 . 号分割）
-     * @param  string $range  作用域
+     * @param string|null $name 配置参数名（支持二级配置 . 号分割）
+     * @param string $range  作用域
      * @return mixed
      */
-    public static function get($name = null, $range = '')
+    public static function get(string $name = null, string $range = '')
     {
         $range = $range ?: self::$range;
 
@@ -124,7 +124,7 @@ class Config
         // 非二级配置时直接返回
         if (!strpos($name, '.')) {
             $name = strtolower($name);
-            return isset(self::$config[$range][$name]) ? self::$config[$range][$name] : null;
+            return self::$config[$range][$name] ?? null;
         }
 
         // 二维数组设置和获取支持
@@ -139,9 +139,7 @@ class Config
             is_file($file) && self::load($file, $name[0]);
         }
 
-        return isset(self::$config[$range][$name[0]][$name[1]]) ?
-            self::$config[$range][$name[0]][$name[1]] :
-            null;
+        return self::$config[$range][$name[0]][$name[1]] ?? null;
     }
 
     /**
@@ -149,10 +147,10 @@ class Config
      * @access public
      * @param  string|array $name  配置参数名（支持二级配置 . 号分割）
      * @param  mixed        $value 配置值
-     * @param  string       $range 作用域
+     * @param string $range 作用域
      * @return mixed
      */
-    public static function set($name, $value = null, $range = '')
+    public static function set($name, $value = null, string $range = '')
     {
         $range = $range ?: self::$range;
 
@@ -193,14 +191,14 @@ class Config
     /**
      * 重置配置参数
      * @access public
-     * @param  string $range 作用域
+     * @param string $range 作用域
      * @return void
      */
-    public static function reset($range = '')
+    public static function reset(string $range = '')
     {
         $range = $range ?: self::$range;
 
-        if (true === $range) {
+        if ($range) {
             self::$config = [];
         } else {
             self::$config[$range] = [];

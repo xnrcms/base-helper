@@ -23,7 +23,7 @@ class Tree
         'pid'   => 'pid',   // pid名称
         'title' => 'title', // 标题名称
         'child' => 'child', // 子元素键名
-        'html'  => '┝ ',   // 层级标记
+        'html'  => '┝ ',    // 层级标记
         'step'  => 4,       // 层级步进数量
     ];
 
@@ -31,17 +31,17 @@ class Tree
      * 架构函数
      * @param array $config
      */
-    public function __construct($config = [])
+    public function __construct(array $config = [])
     {
         self::$config = array_merge(self::$config, $config);
     }
 
     /**
      * 配置参数
-     * @param  array $config
+     * @param array $config
      * @return object
      */
-    public static function config($config = [])
+    public static function config(array $config = []): object
     {
         if (!empty($config)) {
             $config = array_merge(self::$config, $config);
@@ -61,7 +61,7 @@ class Tree
      *
      * @return array
      */
-    public static function toLayer($lists = [], $pid = 0, $max_level = 0, $curr_level = 0)
+    public static function toLayer($lists = [], int $pid = 0, int $max_level = 0, int $curr_level = 0): array
     {
         $trees = [];
         $lists = array_values($lists);
@@ -84,21 +84,18 @@ class Tree
     /**
      * 将数据集格式化成列表结构
      * @param  array|object   $lists 要格式化的数据集，可以是数组，也可以是对象
-     * @param  integer $pid        父级id
-     * @param  integer $level      级别
+     * @param integer $pid        父级id
+     * @param integer $level      级别
      * @return array 列表结构(一维数组)
      */
-    public static function toList($lists = [], $pid = 0, $level = 0)
+    public static function toList($lists = [], int $pid = 0, int $level = 0)
     {
         if (is_array($lists)) {
             $trees = [];
             foreach ($lists as $key => $value) {
                 if ($value[self::$config['pid']] == $pid) {
-                    $title_prefix   = str_repeat("&nbsp;", $level * self::$config['step']).self::$config['html'];
-                    $value['level'] = $level + 1;
-                    $value['title_prefix']  = $level == 0 ? '' : $title_prefix;
-                    $value['title_display'] = $level == 0 ? $value[self::$config['title']] : $title_prefix.$value[self::$config['title']];
-                    $trees[] = $value;
+                    $value      = self::getValue($level, $value);
+                    $trees[]    = $value;
                     unset($lists[$key]);
                     $trees   = array_merge($trees, self::toList($lists, $value[self::$config['id']], $level + 1));
                 }
@@ -107,26 +104,24 @@ class Tree
         } else {
             foreach ($lists as $key => $value) {
                 if ($value[self::$config['pid']] == $pid && is_object($value)) {
-                    $title_prefix   = str_repeat("&nbsp;", $level * self::$config['step']).self::$config['html'];
-                    $value['level'] = $level + 1;
-                    $value['title_prefix']  = $level == 0 ? '' : $title_prefix;
-                    $value['title_display'] = $level == 0 ? $value[self::$config['title']] : $title_prefix.$value[self::$config['title']];
+                    $value      = self::getValue($level, $value);
                     $lists->offsetUnset($key);
-                    $lists[] = $value;
+                    $lists[]    = $value;
                     self::toList($lists, $value[self::$config['id']], $level + 1);
                 }
             }
+
             return $lists;
         }
     }
 
     /**
      * 根据子节点返回所有父节点
-     * @param  array  $lists 数据集
-     * @param  string $id    子节点id
+     * @param array $lists 数据集
+     * @param string $id    子节点id
      * @return array
      */
-    public static function getParents($lists = [], $id = '')
+    public static function getParents(array $lists = [], string $id = ''): array
     {
         $trees = [];
         foreach ($lists as $value) {
@@ -135,16 +130,17 @@ class Tree
                 $trees   = array_merge(self::getParents($lists, $value[self::$config['pid']]), $trees);
             }
         }
+
         return $trees;
     }
 
     /**
      * 获取所有子节点id
-     * @param  array  $lists 数据集
-     * @param  string $pid   父级id
+     * @param array $lists 数据集
+     * @param string $pid   父级id
      * @return array
      */
-    public static function getChildsId($lists = [], $pid = '')
+    public static function getChildsId(array $lists = [], string $pid = ''): array
     {
         $result = [];
         foreach ($lists as $value) {
@@ -153,16 +149,17 @@ class Tree
                 $result = array_merge($result, self::getChildsId($lists, $value[self::$config['id']]));
             }
         }
+
         return $result;
     }
 
     /**
      * 获取所有子节点
-     * @param  array  $lists 数据集
-     * @param  string $pid   父级id
+     * @param array $lists 数据集
+     * @param string $pid   父级id
      * @return array
      */
-    public static function getChilds($lists = [], $pid = '')
+    public static function getChilds(array $lists = [], string $pid = ''): array
     {
         $result = [];
         foreach ($lists as $value) {
@@ -171,6 +168,22 @@ class Tree
                 $result = array_merge($result, self::getChilds($lists, $value[self::$config['id']]));
             }
         }
+
         return $result;
+    }
+
+    /**
+     * 格式化value值
+     * @param int $level
+     * @param $value
+     * @return mixed
+     */
+    public static function getValue(int $level, $value)
+    {
+        $title_prefix           = str_repeat("&nbsp;", $level * self::$config['step']) . self::$config['html'];
+        $value['level']         = $level + 1;
+        $value['title_prefix']  = $level == 0 ? '' : $title_prefix;
+        $value['title_display'] = $level == 0 ? $value[self::$config['title']] : $title_prefix . $value[self::$config['title']];
+        return $value;
     }
 }
